@@ -22,8 +22,10 @@ class Matriz
         int determinaId(int linha, int coluna);
         void imprime();
 
+        void defineVisitasPossiveis();
+        double calculaValorHeuristica(No* atual, No* fim);
+
         void backtracking();
-        void defineRegrasBackTracking();
         void buscaLargura();
         void buscaProfundidade();
         void buscaOrdenada();
@@ -31,9 +33,10 @@ class Matriz
         void buscaA();
         void buscaIDA();
 
-    private:
         No* inicio;
         No* fim;
+
+    private:
         int numLinhas;
         int numColunas;
 };
