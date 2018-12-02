@@ -1,12 +1,14 @@
 #include "Matriz.h"
 #include <iostream>
 #include <cstdlib>
+#include <stdlib.h>
 #include <math.h>
 #include <queue>
 
 using namespace std;
 
 void printaCaminho(vector<int> caminho);
+void insereNaListaAtual (vector<No*> listaAtual, No* umNo);
 
 Matriz::Matriz(int m, int n)
 {
@@ -49,21 +51,36 @@ Matriz::~Matriz() { }
 void Matriz::adicionaAresta(int id1, int id2)
 {
     listaAresta.push_back(new Aresta(listaNo.at(id1),listaNo.at(id2)));
+    double valor = 1.0 + ((double)(rand()%11) / 10.0);
+    //gerando valores entre 1 e 2
+    //cout << "Valor da aresta: " << valor << endl;
     if(id1 < id2){
         if(id2-id1 < numColunas){
             listaNo.at(id1)->setArestaDireita(true);
             listaNo.at(id2)->setArestaEsquerda(true);
+
+            listaNo.at(id1)->custoArestaDireita = valor;
+            listaNo.at(id2)->custoArestaEsquerda = valor;
         } else {
             listaNo.at(id1)->setArestaAbaixo(true);
             listaNo.at(id2)->setArestaAcima(true);
+
+            listaNo.at(id1)->custoArestaAbaixo = valor;
+            listaNo.at(id2)->custoArestaAcima = valor;
         }
     } else if(id1 > id2){
         if(id1-id2 < numColunas){
             listaNo.at(id1)->setArestaEsquerda(true);
             listaNo.at(id2)->setArestaDireita(true);
+
+            listaNo.at(id1)->custoArestaEsquerda = valor;
+            listaNo.at(id2)->custoArestaDireita = valor;
         } else {
             listaNo.at(id1)->setArestaAcima(true);
             listaNo.at(id2)->setArestaAbaixo(true);
+
+            listaNo.at(id1)->custoArestaAcima = valor;
+            listaNo.at(id2)->custoArestaAbaixo = valor;
         }
     }
 }
@@ -141,6 +158,41 @@ void printaCaminho(vector<int> caminho){
     cout << endl << "Solucao encontrada! O trajeto eh: ";
     for(int i=0; i<caminho.size(); i++){
         cout << caminho.at(i) << " - ";
+    }
+}
+
+void Matriz::insereNaListaAtual(vector<No*> *listaAtual, No* no){
+    if(no->getArestaEsquerda() && !(listaNo.at(no->getId()-1)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()-1);
+        noAtual->setVisitado(true);
+        listaAtual->push_back(noAtual);
+        noAtual->caminhoAteEsteNo = no->caminhoAteEsteNo;
+        noAtual->caminhoAteEsteNo.push_back(noAtual->getId());
+        noAtual->custoAcumulado = no->custoAcumulado + no->custoArestaEsquerda;
+    }
+    if(no->getArestaDireita() && !(listaNo.at(no->getId()+1)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()+1);
+        noAtual->setVisitado(true);
+        listaAtual->push_back(noAtual);
+        noAtual->caminhoAteEsteNo = no->caminhoAteEsteNo;
+        noAtual->caminhoAteEsteNo.push_back(noAtual->getId());
+        noAtual->custoAcumulado = no->custoAcumulado + no->custoArestaDireita;
+    }
+    if(no->getArestaAcima() && !(listaNo.at(no->getId()-numColunas)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()-numColunas);
+        noAtual->setVisitado(true);
+        listaAtual->push_back(noAtual);
+        noAtual->caminhoAteEsteNo = no->caminhoAteEsteNo;
+        noAtual->caminhoAteEsteNo.push_back(noAtual->getId());
+        noAtual->custoAcumulado = no->custoAcumulado + no->custoArestaAcima;
+    }
+    if(no->getArestaAbaixo() && !(listaNo.at(no->getId()+numColunas)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()+numColunas);
+        noAtual->setVisitado(true);
+        listaAtual->push_back(noAtual);
+        noAtual->caminhoAteEsteNo = no->caminhoAteEsteNo;
+        noAtual->caminhoAteEsteNo.push_back(noAtual->getId());
+        noAtual->custoAcumulado = no->custoAcumulado + no->custoArestaAbaixo;
     }
 }
 
@@ -280,51 +332,56 @@ void Matriz::buscaLargura()
     }
 }
 
-/*void Matriz::buscaProfundidade()
-{
-    defineVisitasPossiveis();
-    Pilha *abertos = new Pilha();
-    Pilha *fechados = new Pilha();
-    vector<int> caminho;
+void Matriz::buscaA(){
+    vector<No*> folhasAtuais;
+    inicio->caminhoAteEsteNo.push_back(inicio->getId());
+    insereNaListaAtual(&folhasAtuais, inicio);
+
+    No* melhorNo;
+    int indexDoMelhorNo;
+    int valorDoMelhorNo;
+
     bool fracasso = false;
     bool sucesso = false;
-    No* aux;
-    No* no = inicio;
 
-    caminho.push_back(no->getId());
-    abertos->empilha(no);
-
-    while(!(sucesso || fracasso))
-    {
-        no->setVisitado(true);
-        if(abertos->vazia())
-        {
-            fracasso = true;
-        }
-        else
-        {
-            no = abertos->topo();
-            if(no == fim)
-            {
+    while(!(sucesso || fracasso)){
+        //casos de parada
+        for (int i=0; i<folhasAtuais.size(); i++){
+            if (folhasAtuais.at(i)==fim){
                 sucesso = true;
-            }
-            else
-            {
-                while(no->regras.size() != 0)
-                {
-                    aux = no->regras.back();
-                    //abertos->empilha(aux);
-                    no->regras.pop_back();
-                }
-                caminho.push_back(no->getId());
-                fechados->empilha(no);
-                free(no);
+                goto end;
             }
         }
+
+        if (folhasAtuais.size()==0){
+            fracasso = true;
+            goto end;
+        }
+
+        melhorNo = folhasAtuais.at(0);
+        indexDoMelhorNo = 0;
+        valorDoMelhorNo = melhorNo->custoAcumulado + calculaValorHeuristica(melhorNo, fim);
+
+        for (int i=1; i<folhasAtuais.size(); i++){
+            int valorCandidatoAtual = folhasAtuais.at(i)->custoAcumulado+calculaValorHeuristica(folhasAtuais.at(i), fim);
+            cout << "O valor candidato atual eh: " << valorCandidatoAtual << endl;
+            if (valorDoMelhorNo>valorCandidatoAtual){
+                valorDoMelhorNo = valorCandidatoAtual;
+                melhorNo = folhasAtuais.at(i);
+                indexDoMelhorNo = i;
+            }
+        }
+        folhasAtuais.erase(folhasAtuais.begin()+indexDoMelhorNo);
+        insereNaListaAtual(&folhasAtuais, melhorNo);
     }
-    for(int i=0; i<caminho.size(); i++)
-    {
-        cout << caminho.at(i) << " - ";
-    }
+
+    end:
+    if (sucesso)
+        printaCaminho(fim->caminhoAteEsteNo);
+    else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
 }
-*/
+
+void Matriz::buscaIDA(){
+
+}
+

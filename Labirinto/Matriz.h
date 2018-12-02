@@ -24,6 +24,7 @@ class Matriz
 
         void defineVisitasPossiveis();
         double calculaValorHeuristica(No* atual, No* fim);
+        void insereNaListaAtual(vector<No*> *listaAtual, No* no);
 
         void backtracking();
         void buscaLargura();
