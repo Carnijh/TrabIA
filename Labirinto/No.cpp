@@ -1,9 +1,11 @@
 #include "No.h"
 #include <iostream>
 
-No::No(int indice)
+No::No(int indice, int X, int Y)
 {
     id = indice;
+    coordenadaX = X;
+    coordenadaY = Y;
     arestaAbaixo = false;
     arestaAcima = false;
     arestaDireita = false;

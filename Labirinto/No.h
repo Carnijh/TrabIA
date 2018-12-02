@@ -7,9 +7,12 @@ using namespace std;
 class No
 {
     public:
-        No(int indice);
+        No(int indice, int X, int Y);
         No() { }
         ~No();
+
+        int coordenadaX;
+        int coordenadaY;
 
         vector<No*> regras;
         int getId() { return id; }

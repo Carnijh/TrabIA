@@ -14,6 +14,8 @@ class Aresta
         void setNoProx(No* val) { noProx = val; }
         int getPeso() { return peso; }
         void setPeso(int val) { peso = val; }
+        bool getVisitado() { return visitado; }
+        void setVisitado(bool val) { visitado = val; }
 
     protected:
 
@@ -21,6 +23,7 @@ class Aresta
         No* noAnt;
         No* noProx;
         int peso;
+        bool visitado;
 };
 
 #endif // ARESTA_H

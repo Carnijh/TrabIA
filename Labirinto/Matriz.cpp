@@ -1,8 +1,12 @@
 #include "Matriz.h"
 #include <iostream>
 #include <cstdlib>
+#include <math.h>
+#include <queue>
 
 using namespace std;
+
+void printaCaminho(vector<int> caminho);
 
 Matriz::Matriz(int m, int n)
 {
@@ -10,24 +14,30 @@ Matriz::Matriz(int m, int n)
     numColunas = n;
 
     ///Criação dos nós sem arestas
-    for(int i=0; i<numLinhas*numColunas; i++){
-        listaNo.push_back(new No(i));
+    for(int i=0; i<numLinhas; i++){
+        for (int j=0; j<numColunas; j++){
+            listaNo.push_back(new No(i*numColunas+j,i,j));
+        }
     }
 
     ///Adicionando as arestas manualmente
     ///Seguindo o modelo do slide 76 da unidade 1
+
+    //Na horizontal:
     adicionaAresta(0,1);
-    adicionaAresta(0,3);
-    adicionaAresta(1,4);
-    adicionaAresta(2,5);
     adicionaAresta(3,4);
-    adicionaAresta(3,6);
     adicionaAresta(4,5);
-    adicionaAresta(4,7);
-    adicionaAresta(7,8);
-    adicionaAresta(8,11);
     adicionaAresta(9,10);
+    adicionaAresta(7,8);
     adicionaAresta(10,11);
+
+    //Na vertical:
+    adicionaAresta(0,3);
+    adicionaAresta(3,6);
+    adicionaAresta(1,4);
+    adicionaAresta(4,7);
+    adicionaAresta(2,5);
+    adicionaAresta(8,11);
 
     ///Adicionando nó inicio e fim manualmente
     inicio = listaNo.at(11);
@@ -104,9 +114,42 @@ void Matriz::imprime()
     }
 }
 
+///Funcoes auxiliares
+/////////////////////
+
+void Matriz::defineVisitasPossiveis(){
+    for(int i=0; i<listaNo.size(); i++){
+        if(listaNo.at(i)->getArestaEsquerda())
+            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() - 1));
+        if(listaNo.at(i)->getArestaAbaixo())
+            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() + numColunas));
+        if(listaNo.at(i)->getArestaDireita())
+            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() + 1));
+        if(listaNo.at(i)->getArestaAcima())
+            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() - numColunas));
+    }
+}
+
+double Matriz::calculaValorHeuristica(No* atual, No* fim){
+    double distanciaX = double(fim->coordenadaX - atual->coordenadaX);
+    double distanciaY = double(fim->coordenadaY - atual->coordenadaY);
+    cout << "Heuristica entre no candidato " << atual->getId() << " e " << fim->getId() << ": " << sqrt(distanciaX*distanciaX + distanciaY*distanciaY) << endl;
+    return sqrt(distanciaX*distanciaX + distanciaY*distanciaY);
+}
+
+void printaCaminho(vector<int> caminho){
+    cout << endl << "Solucao encontrada! O trajeto eh: ";
+    for(int i=0; i<caminho.size(); i++){
+        cout << caminho.at(i) << " - ";
+    }
+}
+
+///Funcoes dos algoritmos
+/////////////////////////
+
 void Matriz::backtracking()
 {
-    defineRegrasBackTracking();
+    defineVisitasPossiveis();
     vector<int> caminho;
     No* aux;
     No* no = inicio;
@@ -137,33 +180,109 @@ void Matriz::backtracking()
         }
     }
 
-    for(int i=0; i<caminho.size(); i++){
-        cout << caminho.at(i) << " - ";
+    if (sucesso)
+        printaCaminho(caminho);
+    else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
+}
+
+void Matriz::buscaGulosa(){
+    defineVisitasPossiveis();
+    vector<int> caminho;
+    No* aux;
+    No* noAtual = inicio;
+    bool fracasso = false;
+    bool sucesso = false;
+    int valorAtual=0;
+
+    caminho.push_back(noAtual->getId());
+    while(!(sucesso || fracasso)){
+        //caso de parada
+        if (noAtual == fim){
+            sucesso = true;
+            break;
+        }
+        noAtual->setVisitado(true);
+        No* proximoNo = NULL;
+        No* noCandidato = NULL;
+        while (noAtual->regras.size() != 0){
+            noCandidato = noAtual->regras.back();
+            noAtual->regras.pop_back();
+            int valorCandidato = calculaValorHeuristica(noCandidato, fim);
+            if (!(noCandidato->getVisitado())){
+            //se nenhum no foi considerado como proximo ate agora, ele passa a ser o proximo do momento
+                if (proximoNo==NULL){
+                    valorAtual = valorCandidato;
+                    proximoNo = noCandidato;
+
+                //senao, vamos compara-lo ao proximoNo que temos no momento
+                } else {
+                    if (valorCandidato<valorAtual){
+                        valorAtual = valorCandidato;
+                        proximoNo = noCandidato;
+                    }
+                }
+            }
+        }
+
+        if(proximoNo == NULL){
+            fracasso = true;
+        } else {
+            noAtual = proximoNo;
+            caminho.push_back(proximoNo->getId());
+        }
+    }
+
+    if (sucesso)
+        printaCaminho(caminho);
+    else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
+}
+
+void Matriz::buscaLargura()
+{
+    defineVisitasPossiveis();
+    queue<No*> abertos;
+    queue<No*> fechados;
+    No* no;
+    Aresta* aux;
+    bool sucesso = false;
+    bool fracasso = false;
+    abertos.push(inicio);
+
+    while(!(sucesso || fracasso)){
+        if(abertos.size() == 0)
+            fracasso = true;
+        else{
+            no = abertos.front();
+            cout << no->getId() << endl;
+            system("pause");
+            if(no == fim){
+                sucesso = true;
+                fechados.push(no);
+            } else{
+                while(no->regras.size() != 0){
+                    aux = buscaAresta(no,no->regras.back());
+                    if(!aux->getVisitado()){
+                        abertos.push(no->regras.back());
+                        aux->setVisitado(true);
+                    }
+                    no->regras.pop_back();
+                }
+                fechados.push(no);
+                abertos.pop();
+            }
+        }
+    }
+
+    while(fechados.size()!=0)
+    {
+        cout << fechados.front()->getId() << " - ";
+        fechados.pop();
     }
 }
 
-void Matriz::defineRegrasBackTracking()
+/*void Matriz::buscaProfundidade()
 {
-    for(int i=0; i<listaNo.size(); i++){
-        if(listaNo.at(i)->getArestaEsquerda())
-            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() - 1));
-        if(listaNo.at(i)->getArestaAbaixo())
-            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() + numColunas));
-        if(listaNo.at(i)->getArestaDireita())
-            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() + 1));
-        if(listaNo.at(i)->getArestaAcima())
-            listaNo.at(i)->regras.push_back(listaNo.at(listaNo.at(i)->getId() - numColunas));
-    }
-}
-
-void Matriz::buscaOrdenada()
-{
-
-}
-
-void Matriz::buscaProfundidade()
-{
-    defineRegrasBackTracking();
+    defineVisitasPossiveis();
     Pilha *abertos = new Pilha();
     Pilha *fechados = new Pilha();
     vector<int> caminho;
@@ -208,3 +327,4 @@ void Matriz::buscaProfundidade()
         cout << caminho.at(i) << " - ";
     }
 }
+*/
