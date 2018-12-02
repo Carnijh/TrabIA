@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include <queue>
 
@@ -25,31 +26,99 @@ Matriz::Matriz(int m, int n)
     ///Adicionando as arestas manualmente
     ///Seguindo o modelo do slide 76 da unidade 1
 
-    //Na horizontal:
-    adicionaAresta(0,1);
-    adicionaAresta(3,4);
-    adicionaAresta(4,5);
-    adicionaAresta(9,10);
-    adicionaAresta(7,8);
-    adicionaAresta(10,11);
+//    //Na horizontal:
+//    adicionaAresta(0,1);
+//    adicionaAresta(3,4);
+//    adicionaAresta(4,5);
+//    adicionaAresta(9,10);
+//    adicionaAresta(7,8);
+//    adicionaAresta(10,11);
+//
+//    //Na vertical:
+//    adicionaAresta(0,3);
+//    adicionaAresta(3,6);
+//    adicionaAresta(1,4);
+//    adicionaAresta(4,7);
+//    adicionaAresta(2,5);
+//    adicionaAresta(8,11);
 
-    //Na vertical:
-    adicionaAresta(0,3);
-    adicionaAresta(3,6);
-    adicionaAresta(1,4);
-    adicionaAresta(4,7);
-    adicionaAresta(2,5);
-    adicionaAresta(8,11);
+    //int totalArestas = ceil((m*n*2)/3.0);
+    int totalArestas = (m)*(n);
+    int totalInsercoes = 0;
+    int valorMaximoDoNo = m*n;
+    while (totalInsercoes<totalArestas){
+        //cout << "Entrou ";
 
-    ///Adicionando nó inicio e fim manualmente
-    inicio = listaNo.at(11);
-    fim = listaNo.at(9);
+        int primeiroNo = rand() % valorMaximoDoNo;
+        int segundoNo=0;
+
+        ///selecao da direcao da aresta
+        int escolha = rand() % 4;
+        if ((escolha == 0) && (((primeiroNo+1)%numColunas)!=0)){
+            segundoNo = primeiroNo+1;
+            adicionaAresta(primeiroNo, segundoNo);
+            cout << primeiroNo << " " << segundoNo << " " << escolha << endl;
+            //cout << "entrou na insercao e incremento" << endl;
+            totalInsercoes++;
+        }
+        else if ((escolha == 1) && ((primeiroNo%numColunas)!=0)){
+            segundoNo = primeiroNo-1;
+            adicionaAresta(primeiroNo, segundoNo);
+            cout << primeiroNo << " " << segundoNo << " " << escolha << endl;
+            //cout << "entrou na insercao e incremento" << endl;
+            totalInsercoes++;
+        }
+        else if ((escolha == 2) && ((primeiroNo-numColunas)>=0)){
+            segundoNo = primeiroNo-n;
+            adicionaAresta(primeiroNo, segundoNo);
+            cout << primeiroNo << " " << segundoNo << " " << escolha << endl;
+            //cout << "entrou na insercao e incremento" << endl;
+            totalInsercoes++;
+        }
+        else if ((escolha == 3) && ((primeiroNo+numColunas)<n*m)){
+            segundoNo = primeiroNo+n;
+            adicionaAresta(primeiroNo, segundoNo);
+            cout << primeiroNo << " " << segundoNo << " " << escolha << endl;
+            //cout << "entrou na insercao e incremento" << endl;
+            totalInsercoes++;
+        }
+    }
+
+    ///Adicionando nó inicio e fim manualmente.
+    ///Neste labirinto 9x9, existe solucao
+    inicio = listaNo.at(0);
+    fim = listaNo.at(42);
 }
 
 Matriz::~Matriz() { }
 
-void Matriz::adicionaAresta(int id1, int id2)
+void Matriz::imprimeLabirinto(){
+    for(int j=0; j<numColunas; j++){
+        printf("%3d", j);
+    }
+    cout << endl;
+    for(int j=0; j<numColunas; j++){
+        printf("___");
+    }
+    cout << "_" << endl;
+    for(int i=0; i<numLinhas; i++){
+        cout << "|";
+        for (int j=0; j<numColunas; j++){
+            if (listaNo.at(i*numColunas+j)->getArestaAbaixo()){
+                cout << "  ";
+            } else cout << "__";
+            if (listaNo.at(i*numColunas+j)->getArestaDireita()){
+                cout << ":";
+            } else cout << "|";
+
+        }
+        cout << endl;
+    }
+}
+
+int Matriz::adicionaAresta(int id1, int id2)
 {
+    if (buscaAresta(listaNo.at(id1),listaNo.at(id2))!=NULL) return 0;
     listaAresta.push_back(new Aresta(listaNo.at(id1),listaNo.at(id2)));
     double valor = 1.0 + ((double)(rand()%11) / 10.0);
     //gerando valores entre 1 e 2
@@ -83,6 +152,7 @@ void Matriz::adicionaAresta(int id1, int id2)
             listaNo.at(id2)->custoArestaAbaixo = valor;
         }
     }
+    return 1;
 }
 
 Aresta* Matriz::buscaAresta(No* ant, No* prox)
@@ -339,7 +409,7 @@ void Matriz::buscaA(){
 
     No* melhorNo;
     int indexDoMelhorNo;
-    int valorDoMelhorNo;
+    double valorDoMelhorNo;
 
     bool fracasso = false;
     bool sucesso = false;
@@ -363,7 +433,7 @@ void Matriz::buscaA(){
         valorDoMelhorNo = melhorNo->custoAcumulado + calculaValorHeuristica(melhorNo, fim);
 
         for (int i=1; i<folhasAtuais.size(); i++){
-            int valorCandidatoAtual = folhasAtuais.at(i)->custoAcumulado+calculaValorHeuristica(folhasAtuais.at(i), fim);
+            double valorCandidatoAtual = folhasAtuais.at(i)->custoAcumulado+calculaValorHeuristica(folhasAtuais.at(i), fim);
             cout << "O valor candidato atual eh: " << valorCandidatoAtual << endl;
             if (valorDoMelhorNo>valorCandidatoAtual){
                 valorDoMelhorNo = valorCandidatoAtual;

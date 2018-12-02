@@ -16,11 +16,12 @@ class Matriz
         vector<No*> listaNo;
         vector<Aresta*> listaAresta;
 
-        void adicionaAresta(int id1, int id2);
+        int adicionaAresta(int id1, int id2);
         Aresta* buscaAresta(No* ant, No* prox);
         No* consulta(int linha, int coluna);
         int determinaId(int linha, int coluna);
         void imprime();
+        void imprimeLabirinto();
 
         void defineVisitasPossiveis();
         double calculaValorHeuristica(No* atual, No* fim);

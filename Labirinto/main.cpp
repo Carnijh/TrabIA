@@ -8,7 +8,9 @@ void exibeMenu(Matriz* labirinto);
 
 int main()
 {
-    Matriz* labirinto = new Matriz(4,3);
+    Matriz* labirinto = new Matriz(9,9);
+    labirinto->imprimeLabirinto();
+    labirinto->imprime();
     //---------------- MENU ----------------
     exibeMenu(labirinto);
     //---------------- MENU ----------------

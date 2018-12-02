@@ -38,12 +38,12 @@
 1543767312 /home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/No.h
 	<vector>
 
-1543769252 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/main.cpp
+1543775442 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/main.cpp
 	<iostream>
 	<cstdlib>
 	"Matriz.h"
 
-1543765551 /home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Matriz.h
+1543773698 /home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Matriz.h
 	"No.h"
 	"Aresta.h"
 	<vector>
@@ -52,11 +52,12 @@
 	"No.h"
 	<iostream>
 
-1543769175 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Matriz.cpp
+1543776764 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Matriz.cpp
 	"Matriz.h"
 	<iostream>
 	<cstdlib>
 	<stdlib.h>
+	<stdio.h>
 	<math.h>
 	<queue>
 
