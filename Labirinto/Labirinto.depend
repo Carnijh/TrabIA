@@ -1,31 +1,32 @@
 # depslib dependency file v1.0
-1543731431 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\no.cpp
+1543737870 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\no.cpp
 	"No.h"
 	<iostream>
 
-1543731431 c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\no.h
+1543737870 c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\no.h
 	<vector>
 
-1543736386 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\main.cpp
+1543769738 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\main.cpp
 	<iostream>
 	<cstdlib>
 	"Matriz.h"
 
-1543731431 c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\matriz.h
+1543737870 c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\matriz.h
 	"No.h"
 	"Aresta.h"
 	<vector>
 
-1543737229 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\matriz.cpp
+1543770854 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\matriz.cpp
 	"Matriz.h"
 	<iostream>
 	<cstdlib>
 	<math.h>
 	<queue>
+	<stack>
 
-1543736820 c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\aresta.h
+1543737870 c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\aresta.h
 	"No.h"
 
-1543736832 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\aresta.cpp
+1543737870 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\aresta.cpp
 	"Aresta.h"
 

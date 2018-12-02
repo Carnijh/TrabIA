@@ -45,7 +45,7 @@ void exibeMenu(Matriz* labirinto)
             system("cls");
             break;
         case 3:
-            //labirinto->buscaProfundidade();
+            labirinto->buscaProfundidade();
             system("pause");
             system("cls");
             break;

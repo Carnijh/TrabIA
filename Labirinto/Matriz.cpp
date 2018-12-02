@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <math.h>
 #include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -41,7 +42,7 @@ Matriz::Matriz(int m, int n)
 
     ///Adicionando nó inicio e fim manualmente
     inicio = listaNo.at(11);
-    fim = listaNo.at(9);
+    fim = listaNo.at(6);
 }
 
 Matriz::~Matriz() { }
@@ -253,11 +254,8 @@ void Matriz::buscaLargura()
             fracasso = true;
         else{
             no = abertos.front();
-            cout << no->getId() << endl;
-            system("pause");
             if(no == fim){
                 sucesso = true;
-                fechados.push(no);
             } else{
                 while(no->regras.size() != 0){
                     aux = buscaAresta(no,no->regras.back());
@@ -267,9 +265,9 @@ void Matriz::buscaLargura()
                     }
                     no->regras.pop_back();
                 }
-                fechados.push(no);
                 abertos.pop();
             }
+            fechados.push(no);
         }
     }
 
@@ -280,51 +278,46 @@ void Matriz::buscaLargura()
     }
 }
 
-/*void Matriz::buscaProfundidade()
+void Matriz::buscaProfundidade()
 {
     defineVisitasPossiveis();
-    Pilha *abertos = new Pilha();
-    Pilha *fechados = new Pilha();
-    vector<int> caminho;
-    bool fracasso = false;
-    bool sucesso = false;
+    stack<No*> abertos;
+    stack<No*> fechados;
+    No* no;
     No* aux;
-    No* no = inicio;
+    bool sucesso = false;
+    bool fracasso = false;
+    abertos.push(inicio);
 
-    caminho.push_back(no->getId());
-    abertos->empilha(no);
-
-    while(!(sucesso || fracasso))
-    {
-        no->setVisitado(true);
-        if(abertos->vazia())
-        {
+    while(!(sucesso || fracasso)){
+        if(abertos.size() == 0)
             fracasso = true;
-        }
-        else
-        {
-            no = abertos->topo();
-            if(no == fim)
-            {
+        else{
+            no = abertos.top();
+            if(no == fim){
                 sucesso = true;
-            }
-            else
-            {
-                while(no->regras.size() != 0)
-                {
-                    aux = no->regras.back();
-                    //abertos->empilha(aux);
-                    no->regras.pop_back();
+                fechados.push(no);
+            } else{
+                if(no->getVisitado())
+                    abertos.pop();
+                else{
+                    while(no->regras.size() != 0){
+                        aux = no->regras.back();
+                        if(!aux->getVisitado()){
+                            abertos.push(no->regras.back());
+                        }
+                        no->regras.pop_back();
+                        no->setVisitado(true);
+                    }
+                    fechados.push(no);
                 }
-                caminho.push_back(no->getId());
-                fechados->empilha(no);
-                free(no);
             }
         }
     }
-    for(int i=0; i<caminho.size(); i++)
+
+    while(fechados.size()!=0)
     {
-        cout << caminho.at(i) << " - ";
+        cout << fechados.top()->getId() << " - ";
+        fechados.pop();
     }
 }
-*/
