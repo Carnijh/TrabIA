@@ -1,25 +1,22 @@
 #include <iostream>
+#include <cstdlib>
 #include "Matriz.h"
 
 using namespace std;
 
-//int exibeMenu(Matriz* labirinto);
+void exibeMenu(Matriz* labirinto);
 
 int main()
 {
     Matriz* labirinto = new Matriz(4,3);
-    labirinto->backtracking();
-    //--------------------------------------------------- MENU --------------------------------------------------
-    /*int menu;
-    do menu = exibeMenu(labirinto);
-    while(menu>=1 && menu<=7);*/
-    //--------------------------------------------------- MENU --------------------------------------------------
-
-    //delete labirinto; //Desalocar labirinto
+    //---------------- MENU ----------------
+    exibeMenu(labirinto);
+    //---------------- MENU ----------------
+    delete labirinto; //Desalocar labirinto
     return 0;
 }
 
-/*int exibeMenu(Grafo* labirinto)
+void exibeMenu(Matriz* labirinto)
 {
     int opMenu;
     cout << "------------------ MENU ------------------" << endl;
@@ -37,28 +34,41 @@ int main()
 
     switch (opMenu)
     {
-    case 1:
-        labirinto->backtracking();
-        break;
-    case 2:
-        labirinto->buscaLargura();
-        break;
-    case 3:
-        labirinto->buscaProfundidade();
-        break;
-    case 4:
-        labirinto->buscaOrdenada();
-        break;
-    case 5:
-        labirinto->buscaGulosa();
-        break;
-    case 6:
-        labirinto->buscaA();
-        break;
-    case 7:
-        labirinto->buscaIDA();
-        break;
-    default: break;
+        case 1:
+            labirinto->backtracking();
+            system("pause");
+            system("cls");
+            break;
+        case 2:
+            labirinto->buscaLargura();
+            system("pause");
+            system("cls");
+            break;
+        case 3:
+            //labirinto->buscaProfundidade();
+            system("pause");
+            system("cls");
+            break;
+        case 4:
+            //labirinto->buscaOrdenada();
+            system("pause");
+            system("cls");
+            break;
+        case 5:
+            labirinto->buscaGulosa();
+            system("pause");
+            system("cls");
+            break;
+        case 6:
+            //labirinto->buscaA();
+            system("pause");
+            system("cls");
+            break;
+        case 7:
+            //labirinto->buscaIDA();
+            system("pause");
+            system("cls");
+            break;
+        default: break;
     }
-    return opMenu;
-}*/
+}

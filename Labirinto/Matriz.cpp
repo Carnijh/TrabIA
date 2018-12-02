@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
+#include <queue>
 
 using namespace std;
 
@@ -236,14 +237,52 @@ void Matriz::buscaGulosa(){
     else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
 }
 
-void Matriz::buscaOrdenada()
+void Matriz::buscaLargura()
 {
+    defineVisitasPossiveis();
+    queue<No*> abertos;
+    queue<No*> fechados;
+    No* no;
+    Aresta* aux;
+    bool sucesso = false;
+    bool fracasso = false;
+    abertos.push(inicio);
 
+    while(!(sucesso || fracasso)){
+        if(abertos.size() == 0)
+            fracasso = true;
+        else{
+            no = abertos.front();
+            cout << no->getId() << endl;
+            system("pause");
+            if(no == fim){
+                sucesso = true;
+                fechados.push(no);
+            } else{
+                while(no->regras.size() != 0){
+                    aux = buscaAresta(no,no->regras.back());
+                    if(!aux->getVisitado()){
+                        abertos.push(no->regras.back());
+                        aux->setVisitado(true);
+                    }
+                    no->regras.pop_back();
+                }
+                fechados.push(no);
+                abertos.pop();
+            }
+        }
+    }
+
+    while(fechados.size()!=0)
+    {
+        cout << fechados.front()->getId() << " - ";
+        fechados.pop();
+    }
 }
 
-void Matriz::buscaProfundidade()
+/*void Matriz::buscaProfundidade()
 {
-    defineRegrasBackTracking();
+    defineVisitasPossiveis();
     Pilha *abertos = new Pilha();
     Pilha *fechados = new Pilha();
     vector<int> caminho;
@@ -288,3 +327,4 @@ void Matriz::buscaProfundidade()
         cout << caminho.at(i) << " - ";
     }
 }
+*/
