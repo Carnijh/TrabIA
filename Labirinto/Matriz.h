@@ -23,6 +23,7 @@ class Matriz
         void imprime();
         void imprimeLabirinto();
 
+        void insereEmFechados(vector<No*> *listaAtual, No* no);
         void defineVisitasPossiveis();
         double calculaValorHeuristica(No* atual, No* fim);
         void insereNaListaAtual(vector<No*> *listaAtual, No* no);

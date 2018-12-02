@@ -44,7 +44,7 @@ Matriz::Matriz(int m, int n)
 //    adicionaAresta(8,11);
 
     //int totalArestas = ceil((m*n*2)/3.0);
-    int totalArestas = (m)*(n);
+    int totalArestas = 2*m*n;
     int totalInsercoes = 0;
     int valorMaximoDoNo = m*n;
     while (totalInsercoes<totalArestas){
@@ -267,8 +267,126 @@ void Matriz::insereNaListaAtual(vector<No*> *listaAtual, No* no){
     }
 }
 
+void Matriz::insereEmFechados(vector<No*> *listaAtual, No* no){
+    if(no->getArestaEsquerda() && !(listaNo.at(no->getId()-1)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()-1);
+        listaAtual->push_back(noAtual);
+    }
+    if(no->getArestaDireita() && !(listaNo.at(no->getId()+1)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()+1);
+        listaAtual->push_back(noAtual);
+    }
+    if(no->getArestaAcima() && !(listaNo.at(no->getId()-numColunas)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()-numColunas);
+        listaAtual->push_back(noAtual);
+    }
+    if(no->getArestaAbaixo() && !(listaNo.at(no->getId()+numColunas)->getVisitado())){
+        No* noAtual = listaNo.at(no->getId()+numColunas);
+        listaAtual->push_back(noAtual);
+    }
+}
+
 ///Funcoes dos algoritmos
 /////////////////////////
+
+void Matriz::buscaOrdenada(){
+    vector<No*> folhasAtuais;
+    inicio->caminhoAteEsteNo.push_back(inicio->getId());
+    //insereEmFechados(&folhasAtuais, inicio);
+    folhasAtuais.push_back(inicio);
+
+    No* melhorNo;
+    No* noPai = inicio;
+    int indexDoMelhorNo;
+    double valorDoMelhorNo;
+
+    bool fracasso = false;
+    bool sucesso = false;
+    bool conseguiuInserir = false;
+
+    defineVisitasPossiveis();
+
+    while(!(sucesso || fracasso)){
+        //casos de parada
+        for (int i=0; i<folhasAtuais.size(); i++){
+            if (folhasAtuais.at(i)==fim){
+                sucesso = true;
+                goto end;
+            }
+        }
+        ///valorDoMelhorNo = melhorNo->custoAcumulado + calculaValorHeuristica(melhorNo, fim);
+        No* melhorNo;
+        int valorMelhor = 1000000000;
+        int valorCandidato;
+
+        for (int i=0; i<folhasAtuais.size(); i++){
+            if(folhasAtuais.at(i)->getArestaEsquerda()){
+                if (!(listaNo.at((folhasAtuais.at(i)->getId()) - 1)->getVisitado())){
+                    valorCandidato = folhasAtuais.at(i)->custoAcumulado + folhasAtuais.at(i)->custoArestaEsquerda;
+                    if (valorCandidato<valorMelhor){
+                        noPai = folhasAtuais.at(i);
+                        valorMelhor = valorCandidato;
+                        melhorNo = listaNo.at(folhasAtuais.at(i)->getId() - 1);
+                        conseguiuInserir = true;
+                    }
+                }
+            }
+            if(folhasAtuais.at(i)->getArestaDireita()){
+                if (!(listaNo.at((folhasAtuais.at(i)->getId()) + 1)->getVisitado())){
+                    valorCandidato = folhasAtuais.at(i)->custoAcumulado + folhasAtuais.at(i)->custoArestaDireita;
+                    if (valorCandidato<valorMelhor){
+                        noPai = folhasAtuais.at(i);
+                        valorMelhor = valorCandidato;
+                        melhorNo = listaNo.at(folhasAtuais.at(i)->getId() + 1);
+                        conseguiuInserir = true;
+                    }
+                }
+            }
+            if(folhasAtuais.at(i)->getArestaAbaixo()){
+               if (!(listaNo.at((folhasAtuais.at(i)->getId()) + numColunas)->getVisitado())){
+                    valorCandidato = folhasAtuais.at(i)->custoAcumulado + folhasAtuais.at(i)->custoArestaAbaixo;
+                    if (valorCandidato<valorMelhor){
+                        noPai = folhasAtuais.at(i);
+                        valorMelhor = valorCandidato;
+                        melhorNo = listaNo.at(folhasAtuais.at(i)->getId() + numColunas);
+                        conseguiuInserir = true;
+                    }
+                }
+            }
+            if(folhasAtuais.at(i)->getArestaAcima()){
+                if (!(listaNo.at((folhasAtuais.at(i)->getId()) - numColunas)->getVisitado())){
+                    valorCandidato = folhasAtuais.at(i)->custoAcumulado + folhasAtuais.at(i)->custoArestaAcima;
+                    if (valorCandidato<valorMelhor){
+                        noPai = folhasAtuais.at(i);
+                        valorMelhor = valorCandidato;
+                        melhorNo = listaNo.at(folhasAtuais.at(i)->getId() - numColunas);
+                        conseguiuInserir = true;
+                    }
+                }
+            }
+        }
+        if (!conseguiuInserir){
+            fracasso = true;
+            goto end;
+        }
+
+        //cout << "melhor noh selecionado! tem o id " << melhorNo->getId() << endl;
+        melhorNo->setVisitado(true);
+        melhorNo->custoAcumulado = valorMelhor;
+        melhorNo->caminhoAteEsteNo = noPai->caminhoAteEsteNo;
+        melhorNo->caminhoAteEsteNo.push_back(melhorNo->getId());
+
+        //insereEmFechados(&folhasAtuais, melhorNo);
+        folhasAtuais.push_back(melhorNo);
+
+    }
+
+
+    end:
+    if (sucesso)
+        printaCaminho(fim->caminhoAteEsteNo);
+    else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
+}
 
 void Matriz::backtracking()
 {
@@ -443,7 +561,6 @@ void Matriz::buscaProfundidade()
         fechados.pop();
     }
 }
-
 
 void Matriz::buscaA(){
     vector<No*> folhasAtuais;

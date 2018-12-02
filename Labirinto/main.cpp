@@ -52,7 +52,7 @@ void exibeMenu(Matriz* labirinto)
             system("cls");
             break;
         case 4:
-            //labirinto->buscaOrdenada();
+            labirinto->buscaOrdenada();
             system("pause");
             system("cls");
             break;
