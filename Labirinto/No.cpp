@@ -12,6 +12,7 @@ No::No(int indice, int X, int Y)
     arestaEsquerda = false;
     visitado = false;
     pai = NULL;
+    custoAcumulado = 0;
 }
 
 No::~No()

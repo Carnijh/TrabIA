@@ -14,7 +14,15 @@ class No
         int coordenadaX;
         int coordenadaY;
 
+        double custoAcumulado;
+        double custoArestaAcima;
+        double custoArestaAbaixo;
+        double custoArestaEsquerda;
+        double custoArestaDireita;
+
+        vector<int> caminhoAteEsteNo;
         vector<No*> regras;
+
         int getId() { return id; }
         bool getVisitado() { return visitado; }
         void setVisitado(bool val) { visitado = val; }

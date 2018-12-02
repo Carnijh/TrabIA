@@ -30,3 +30,36 @@
 1543737870 source:c:\users\carni\google drive\documentos\ufjf\sistemas de informação\5º período\inteligência artificial\trabia\labirinto\aresta.cpp
 	"Aresta.h"
 
+1543762647 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Aresta.cpp
+	"Aresta.h"
+
+1543762647 /home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Aresta.h
+	"No.h"
+
+1543777212 /home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/No.h
+	<vector>
+
+1543777212 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/main.cpp
+	<iostream>
+	<cstdlib>
+	"Matriz.h"
+
+1543777212 /home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Matriz.h
+	"No.h"
+	"Aresta.h"
+	<vector>
+
+1543777212 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/No.cpp
+	"No.h"
+	<iostream>
+
+1543777569 source:/home/denizen/Downloads/Pasta do Git/TrabIA/Labirinto/Matriz.cpp
+	"Matriz.h"
+	<iostream>
+	<cstdlib>
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+	<queue>
+	<stack>
+
