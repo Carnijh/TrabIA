@@ -88,7 +88,7 @@ Matriz::Matriz(int m, int n)
     ///Adicionando nó inicio e fim manualmente.
     ///Neste labirinto 9x9, existe solucao
     inicio = listaNo.at(0);
-    fim = listaNo.at(42);
+    fim = listaNo.at((n*m)-1);
 }
 
 Matriz::~Matriz() { }
@@ -383,8 +383,10 @@ void Matriz::buscaOrdenada(){
 
 
     end:
-    if (sucesso)
+    if (sucesso){
         printaCaminho(fim->caminhoAteEsteNo);
+        cout << "\n Nos expandidos: " << fim->caminhoAteEsteNo.size() << "\n";
+    }
     else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
 }
 
@@ -421,8 +423,10 @@ void Matriz::backtracking()
         }
     }
 
-    if (sucesso)
+    if (sucesso){
         printaCaminho(caminho);
+        cout << "\n Nos expandidos: " << caminho.size() << "\n" ;
+    }
     else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
 }
 
@@ -473,8 +477,10 @@ void Matriz::buscaGulosa(){
         }
     }
 
-    if (sucesso)
+    if (sucesso){
         printaCaminho(caminho);
+        cout << "\n Nos expandidos: " << caminho.size() << "\n";
+    }
     else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
 }
 
@@ -510,12 +516,13 @@ void Matriz::buscaLargura()
             fechados.push(no);
         }
     }
-
+    int numExplorados = fechados.size();
     while(fechados.size()!=0)
     {
         cout << fechados.front()->getId() << " - ";
         fechados.pop();
     }
+    cout << "\n Nos expandidos: " << numExplorados << "\n";
 }
 
 void Matriz::buscaProfundidade()
@@ -555,11 +562,13 @@ void Matriz::buscaProfundidade()
         }
     }
 
+    int numExplorados = fechados.size();
     while(fechados.size()!=0)
     {
         cout << fechados.top()->getId() << " - ";
         fechados.pop();
     }
+    cout << "\n Nos expandidos: " << numExplorados << "\n";
 }
 
 void Matriz::buscaA(){
@@ -607,8 +616,10 @@ void Matriz::buscaA(){
 
 
     end:
-    if (sucesso)
+    if (sucesso){
         printaCaminho(fim->caminhoAteEsteNo);
+        cout << "\n Nos expandidos: " << fim->caminhoAteEsteNo.size() << "\n";
+    {
     else if (fracasso) cout << "Nao se encontrou uma solucao." << endl;
 }
 
