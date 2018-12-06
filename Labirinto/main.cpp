@@ -12,7 +12,9 @@ int main()
     labirinto->imprimeLabirinto();
     labirinto->imprime();
     //---------------- MENU ----------------
+    while(true){
     exibeMenu(labirinto);
+    }
     //---------------- MENU ----------------
     delete labirinto; //Desalocar labirinto
     return 0;
